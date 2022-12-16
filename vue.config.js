@@ -1,5 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
-  publicPath: '/smart-check/'
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/smart-check/'
+    : '/'
 })
