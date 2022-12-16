@@ -9,7 +9,7 @@
             <img src="@/assets/images/moloko.jpg" alt="">
         </div>
 
-        <h1 class="h1">Молоко Галичина т/ф 2,5% 900 мл</h1>
+        <h1 class="h1">Молоко Галичина т/ф 3,5% 900 мл</h1>
 
         <div class="product-info">
             <div>
