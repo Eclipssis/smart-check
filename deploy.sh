@@ -8,3 +8,5 @@ npm run build
 
 # переход в каталог сборки
 cd dist
+
+cd -
