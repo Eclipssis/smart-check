@@ -2,9 +2,61 @@
   <div class="home">
     <header class="header">
         <span class="logo-title">Smart Check</span>
+        <div class="app-logo">
+          <img src="@/assets/images/app-store.png">
+          <img src="@/assets/images/android.png">
+        </div>
     </header>
 
     <div class="container">
+        <div class="count-down">
+          <div>
+              <h2 class="h2">Термін придатності товара</h2>
+          </div>
+
+          <vue-countdown :time="expireDays" v-slot="{ days, hours, minutes, seconds }">
+            <div class="timer">
+              <div class="timer-wrap" :class="{expired: isExpired}">
+                  <div class="month-days-minutes">
+                      <div class="numbers">
+                          <div class="numbers-size">{{ days }}</div>
+                      </div>
+                      <p class="instruments color-olive">Дні</p>
+                  </div>
+
+                  <div class="dots">:</div>
+
+                  <div class="month-days-minutes">
+                      <div class="numbers">
+                          <div class="numbers-size">{{ formatNumber(hours) }}</div>
+                      </div>
+                      <p class="instruments color-olive">Години</p>
+                  </div>
+
+                  <div class="dots">:</div>
+
+                  <div class="month-days-minutes">
+                      <div class="numbers">
+                          <div class="numbers-size">{{ formatNumber(minutes) }}</div>
+                      </div>
+                      <p class="instruments color-olive">Хвилини</p>
+                  </div>
+
+                  <div class="dots">:</div>
+
+                  <div class="month-days-minutes">
+                      <div class="numbers">
+                          <div class="numbers-size">{{ formatNumber(seconds) }}</div>
+                      </div>
+                      <p class="instruments color-olive">Cекунди</p>
+                  </div>
+              </div>
+
+          </div>
+          </vue-countdown>
+
+        </div>
+
         <div class="product-img">
             <img src="@/assets/images/moloko.jpg" alt="">
         </div>
@@ -18,62 +70,30 @@
             </div>
             <div class="mr">
                 <span class="instruments">Дата виготовлення:</span>
-                <span class="info">{{ dateCreated.format('DD.MM.YYYY') }}</span>
+                <span class="info">{{ dateCreated.format('DD.MM.YYYY HH:mm') }}</span>
             </div>
 
-            <div>
+            <div class="mr">
                 <span class="instruments">Термін придатності:</span>
-                <span class="info">{{ dateExpired.format('DD.MM.YYYY') }}</span>
+                <span class="info">{{ expireDuration }} днів</span>
             </div>
+
+            <div class="mr">
+                <span class="instruments">Дата кінцевої реалізації:</span>
+                <span class="info">{{ dateExpired.format('DD.MM.YYYY HH:mm') }}</span>
+            </div>
+
+            <div class="mr">
+                <span class="instruments">Умови зберігання:</span>
+                <span class="info"> Температура, вологість </span>
+            </div>
+
+            <span class="more">
+              <span>Подробнее</span>
+              <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow">
+            </span>
         </div>
 
-        <div class="count-down">
-            <div>
-                <h2 class="h2">Термін придатності триватиме</h2>
-            </div>
-
-            <vue-countdown :time="expireDays" v-slot="{ days, hours, minutes, seconds }">
-              <div class="timer">
-                <div class="timer-wrap" :class="{expired: isExpired}">
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ days }}</div>
-                        </div>
-                        <p class="instruments color-olive">Дні</p>
-                    </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(hours) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Години</p>
-                    </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(minutes) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Хвилини</p>
-                    </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(seconds) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Cекунди</p>
-                    </div>
-                </div>
-
-            </div>
-            </vue-countdown>
-
-        </div>
     </div>
 
     <div class="gray-line"></div>
@@ -81,9 +101,10 @@
     <div class="container">
         <h2 class="h2">Соціальні мережі</h2>
         <div class="social-media">
+            <a class="web" href="https://www.facebook.com/profile.php?id=100039877674817"></a>
             <a class="facebook" href="!#"></a>
             <a class="insta" href="!#"></a>
-
+            <a class="youtube" href="https://www.instagram.com/noskizhitomirski/"></a>
         </div>
     </div>
 
@@ -108,8 +129,14 @@ export default {
     return {
       expireDays: 2 * 24 * 60 * 60 * 1000,
       dateCreated: moment('2022.12.01 12:00'),
-      dateExpired: moment('2022.12.25 09:00'),
+      dateExpired: moment('2023.01.02 09:00'),
       isExpired: false
+    }
+  },
+
+  computed: {
+    expireDuration () {
+      return this.dateExpired.diff(this.dateCreated, 'days')
     }
   },
 

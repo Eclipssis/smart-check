@@ -2,39 +2,23 @@
   <div class="home">
     <header class="header">
         <span class="logo-title">Smart Check</span>
+        <div class="app-logo">
+          <div class="text-left">
+            <img src="@/assets/images/app-store.png" class="apple-app">
+            <img src="@/assets/images/android.png" class="android-app">
+          </div>
+        </div>
     </header>
 
     <div class="container">
-        <div class="product-img">
-            <img src="@/assets/images/noski.jpg" alt="">
-        </div>
-
-        <h1 class="h1">Носки Чоловічі Житомирські</h1>
-
-        <div class="product-info">
-            <div>
-                <span class="instruments">Виробник:</span>
-                <span class="info">Житомир</span>
-            </div>
-            <div class="mr">
-                <span class="instruments">Дата виготовлення:</span>
-                <span class="info">{{ dateCreated.format('DD.MM.YYYY') }}</span>
-            </div>
-
-            <div>
-                <span class="instruments">Термін придатності:</span>
-                <span class="info">{{ dateExpired.format('DD.MM.YYYY') }}</span>
-            </div>
-        </div>
-
         <div class="count-down">
             <div>
                 <h2 class="h2">Термін придатності триватиме:</h2>
             </div>
 
             <vue-countdown :time="expireDays" v-slot="{ days, hours, minutes, seconds }">
-              <div class="timer">
-                <div class="timer-wrap" :class="{expired: isExpired}">
+              <div class="timer" :class="{expired: isExpired}">
+                <div class="timer-wrap" >
                     <div class="month-days-minutes">
                         <div class="numbers">
                             <div class="numbers-size">{{ days }}</div>
@@ -74,6 +58,46 @@
             </vue-countdown>
 
         </div>
+
+        <div class="product-img">
+            <img src="@/assets/images/photo1671616747.jpeg" alt="">
+            <span v-if="isExpired" class="expired-label">ПРОСРОЧЕНО</span>
+        </div>
+
+        <h1 class="h1">Носки Чоловічі Житомирські</h1>
+
+        <div class="product-info">
+            <div>
+                <span class="instruments">Виробник:</span>
+                <span class="info">Житомир</span>
+            </div>
+
+            <div class="mr">
+                <span class="instruments">Дата виготовлення:</span>
+                <span class="info">{{ dateCreated.format('DD.MM.YYYY HH:mm') }}</span>
+            </div>
+
+            <div class="mr">
+                <span class="instruments">Термін придатності:</span>
+                <span class="info">{{ expireDuration }} днів</span>
+            </div>
+
+            <div class="mr">
+                <span class="instruments">Дата кінцевої реалізації:</span>
+                <span class="info">{{ dateExpired.format('DD.MM.YYYY HH:mm') }}</span>
+            </div>
+
+            <div class="mr">
+                <span class="instruments">Умови зберігання:</span>
+                <span class="info"> Температура, вологість </span>
+            </div>
+
+            <span class="more">
+              <span>Подробнее</span>
+              <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow">
+            </span>
+        </div>
+
     </div>
 
     <div class="gray-line"></div>
@@ -81,9 +105,10 @@
     <div class="container">
         <h2 class="h2">Соціальні мережі</h2>
         <div class="social-media">
+            <a class="web" href="https://www.facebook.com/profile.php?id=100039877674817"></a>
             <a class="facebook" href="https://www.facebook.com/profile.php?id=100039877674817"></a>
             <a class="insta" href="https://www.instagram.com/noskizhitomirski/"></a>
-
+            <a class="youtube" href="https://www.instagram.com/noskizhitomirski/"></a>
         </div>
     </div>
 
@@ -108,9 +133,15 @@ export default {
   data () {
     return {
       expireDays: 0,
-      dateCreated: moment('2022.12.01 12:00'),
-      dateExpired: moment('2022.12.20 09:00'),
+      dateCreated: moment('2022.12.01 15:00'),
+      dateExpired: moment('2023.01.15 15:00'),
       isExpired: false
+    }
+  },
+
+  computed: {
+    expireDuration () {
+      return this.dateExpired.diff(this.dateCreated, 'days')
     }
   },
 
