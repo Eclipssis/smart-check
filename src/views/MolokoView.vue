@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <header class="header">
-        <span class="logo-title">Smart Check 2</span>
+        <span class="logo-title">Smart Check</span>
         <div class="app-logo">
           <img src="@/assets/images/app-store.png">
           <img src="@/assets/images/android.png">
