@@ -12,50 +12,51 @@
 
     <div class="container">
         <div class="count-down">
-            <div>
-                <h2 class="h2">Термін придатності триватиме:</h2>
-            </div>
+            <h2 class="h2">Термін придатності <br>
+              <template v-if="isExpired">скінчився</template>
+              <template v-else>товара</template>
+            </h2>
 
-            <vue-countdown :time="expireDays" v-slot="{ days, hours, minutes, seconds }">
-              <div class="timer" :class="{expired: isExpired}">
-                <div class="timer-wrap" >
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ days }}</div>
-                        </div>
-                        <p class="instruments color-olive">Дні</p>
+            <p v-if="isExpired" class="expired-text">Прострокованый на:</p>
+
+            <div v-if="duration" class="timer" :class="{expired: isExpired}">
+              <div class="timer-wrap" >
+                <div class="month-days-minutes">
+                    <div class="numbers">
+                        <div class="numbers-size">{{ duration.days() }}</div>
                     </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(hours) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Години</p>
-                    </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(minutes) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Хвилини</p>
-                    </div>
-
-                    <div class="dots">:</div>
-
-                    <div class="month-days-minutes">
-                        <div class="numbers">
-                            <div class="numbers-size">{{ formatNumber(seconds) }}</div>
-                        </div>
-                        <p class="instruments color-olive">Cекунди</p>
-                    </div>
+                    <p class="instruments color-olive">Дні</p>
                 </div>
 
+                <div class="dots">:</div>
+
+                <div class="month-days-minutes">
+                    <div class="numbers">
+                        <div class="numbers-size">{{ formatNumber(duration.hours()) }}</div>
+                    </div>
+                    <p class="instruments color-olive">Години</p>
+                </div>
+
+                <div class="dots">:</div>
+
+                <div class="month-days-minutes">
+                    <div class="numbers">
+                        <div class="numbers-size">{{ formatNumber(duration.minutes()) }}</div>
+                    </div>
+                    <p class="instruments color-olive">Хвилини</p>
+                </div>
+
+                <div class="dots">:</div>
+
+                <div class="month-days-minutes">
+                    <div class="numbers">
+                        <div class="numbers-size">{{ formatNumber(duration.seconds()) }}</div>
+                    </div>
+                    <p class="instruments color-olive">Cекунди</p>
+                </div>
+              </div>
+
             </div>
-            </vue-countdown>
 
         </div>
 
@@ -92,10 +93,37 @@
                 <span class="info"> Температура, вологість </span>
             </div>
 
-            <span class="more">
+            <span class="more"  @click="isOpen = !isOpen">
               <span>Подробнее</span>
               <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow">
             </span>
+
+            <div :class="{'open': isOpen}" class="details" ref="details">
+              <h3 class="detail-title">Cклад:</h3>
+              <div class="detail-item">
+                <div>Бавовна</div>
+                <span>80%</span>
+              </div>
+
+              <div class="detail-item">
+                <div>Поліестер</div>
+                <span>16%</span>
+              </div>
+
+              <div class="detail-item mb-3">
+                <div>Еластан</div>
+                <span>4%</span>
+              </div>
+
+              <div class="">
+                Виробник: ФОП Камінна Л.В.
+              </div>
+              <div>
+              Україна, м. Житомир, вул Ватуніна, 55б
+              </div>
+              <div>моб. +38 (097) 485-11-52</div>
+              <div>моб. +38 (097) 410-02-54</div>
+            </div>
         </div>
 
     </div>
@@ -126,16 +154,24 @@
 
 <script>
 import moment from 'moment'
+import momentDurationFormatSetup from 'moment-duration-format'
+
+momentDurationFormatSetup(moment)
 
 export default {
   name: 'MolokoView',
 
   data () {
     return {
-      expireDays: 0,
-      dateCreated: moment('2022.12.01 15:00'),
-      dateExpired: moment('2023.01.15 15:00'),
-      isExpired: false
+      dateCreated: moment('2023.01.01 15:00'),
+      dateExpired: moment('2023.01.25 15:00'),
+      isExpired: false,
+      isOpen: false,
+
+      duration: 0,
+      toExpireId: null,
+      fromExpireId: null,
+      time: 0
     }
   },
 
@@ -148,18 +184,47 @@ export default {
   methods: {
     formatNumber (number) {
       return number < 10 ? `0${number}` : number
+    },
+
+    countRevert () {
+      this.time = this.time + 1
+      this.duration = moment.duration(this.time, 'seconds')
+
+      const end = this.dateExpired.diff(this.dateCreated, 'seconds')
+      if (this.time >= end) {
+        clearInterval(this.fromExpireId)
+      }
+    },
+
+    startRevertCount () {
+      this.countRevert()
+
+      this.fromExpireId = setInterval(() => {
+        this.countRevert()
+      }, 1000)
+    },
+
+    startTimer () {
+      const diff = this.dateExpired.diff(moment(), 'seconds')
+
+      if (diff < 0) {
+        if (this.toExpireId) clearInterval(this.toExpireId)
+        this.isExpired = true
+        console.log('diff', diff)
+        this.time = Math.abs(diff === -1 ? 0 : diff)
+        if (!this.fromExpireId) this.startRevertCount()
+      } else {
+        this.duration = moment.duration(diff, 'seconds')
+      }
     }
   },
 
   mounted () {
-    const diff = this.dateExpired.diff(moment(), 'seconds')
+    this.startTimer()
 
-    let expiteTime = diff * 1000
-    if (expiteTime < 0) {
-      expiteTime = Math.abs(expiteTime)
-      this.isExpired = true
-    }
-    this.expireDays = expiteTime
+    this.toExpireId = setInterval(() => {
+      this.startTimer()
+    }, 1000)
   }
 }
 </script>

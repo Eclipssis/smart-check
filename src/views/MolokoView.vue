@@ -11,54 +11,58 @@
     <div class="container">
         <div class="count-down">
           <div>
-              <h2 class="h2">Термін придатності товара</h2>
+              <h2 class="h2">Термін придатності <br>
+                <template v-if="isExpired">скінчився</template>
+                <template v-else>товара</template>
+              </h2>
+
+              <p v-if="isExpired" class="expired-text">Прострокованый на:</p>
           </div>
 
-          <vue-countdown :time="expireDays" v-slot="{ days, hours, minutes, seconds }">
-            <div class="timer">
-              <div class="timer-wrap" :class="{expired: isExpired}">
-                  <div class="month-days-minutes">
-                      <div class="numbers">
-                          <div class="numbers-size">{{ days }}</div>
-                      </div>
-                      <p class="instruments color-olive">Дні</p>
+          <div v-if="duration" class="timer" :class="{expired: isExpired}">
+            <div class="timer-wrap" >
+              <div class="month-days-minutes">
+                  <div class="numbers">
+                      <div class="numbers-size">{{ duration.days() }}</div>
                   </div>
-
-                  <div class="dots">:</div>
-
-                  <div class="month-days-minutes">
-                      <div class="numbers">
-                          <div class="numbers-size">{{ formatNumber(hours) }}</div>
-                      </div>
-                      <p class="instruments color-olive">Години</p>
-                  </div>
-
-                  <div class="dots">:</div>
-
-                  <div class="month-days-minutes">
-                      <div class="numbers">
-                          <div class="numbers-size">{{ formatNumber(minutes) }}</div>
-                      </div>
-                      <p class="instruments color-olive">Хвилини</p>
-                  </div>
-
-                  <div class="dots">:</div>
-
-                  <div class="month-days-minutes">
-                      <div class="numbers">
-                          <div class="numbers-size">{{ formatNumber(seconds) }}</div>
-                      </div>
-                      <p class="instruments color-olive">Cекунди</p>
-                  </div>
+                  <p class="instruments color-olive">Дні</p>
               </div>
 
+              <div class="dots">:</div>
+
+              <div class="month-days-minutes">
+                  <div class="numbers">
+                      <div class="numbers-size">{{ formatNumber(duration.hours()) }}</div>
+                  </div>
+                  <p class="instruments color-olive">Години</p>
+              </div>
+
+              <div class="dots">:</div>
+
+              <div class="month-days-minutes">
+                  <div class="numbers">
+                      <div class="numbers-size">{{ formatNumber(duration.minutes()) }}</div>
+                  </div>
+                  <p class="instruments color-olive">Хвилини</p>
+              </div>
+
+              <div class="dots">:</div>
+
+              <div class="month-days-minutes">
+                  <div class="numbers">
+                      <div class="numbers-size">{{ formatNumber(duration.seconds()) }}</div>
+                  </div>
+                  <p class="instruments color-olive">Cекунди</p>
+              </div>
+            </div>
+
           </div>
-          </vue-countdown>
 
         </div>
 
         <div class="product-img">
             <img src="@/assets/images/moloko.jpg" alt="">
+            <span v-if="isExpired" class="expired-label">ПРОСРОЧЕНО</span>
         </div>
 
         <h1 class="h1">Молоко Галичина т/ф 2,5% 900 мл</h1>
@@ -88,10 +92,38 @@
                 <span class="info"> Температура, вологість </span>
             </div>
 
-            <span class="more">
+            <span class="more" @click="isOpen = !isOpen">
               <span>Подробнее</span>
               <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow">
             </span>
+
+            <div :class="{'open': isOpen}" class="details" ref="details">
+              <h3 class="detail-title">Cклад:</h3>
+              <div class="detail-item">
+                <div>Білок</div>
+                <span>3,5%</span>
+              </div>
+
+              <div class="detail-item">
+                <div>Вуглеводи</div>
+                <span>4,8%</span>
+              </div>
+
+              <div class="detail-item mb-3">
+                <div>Жир</div>
+                <span>3,5-4,2%</span>
+              </div>
+
+              <div class="">
+                ТОВ “Молочна компанія “Галичина”
+
+              </div>
+              <div>
+                79024, м. Львів, вул. Липинського, 54
+              </div>
+              <div>моб. +38 (067) 743-65-72</div>
+              <div>моб. +38 (032) 232-62-00</div>
+            </div>
         </div>
 
     </div>
@@ -101,10 +133,10 @@
     <div class="container">
         <h2 class="h2">Соціальні мережі</h2>
         <div class="social-media">
-            <a class="web" href="https://www.facebook.com/profile.php?id=100039877674817"></a>
-            <a class="facebook" href="!#"></a>
-            <a class="insta" href="!#"></a>
-            <a class="youtube" href="https://www.instagram.com/noskizhitomirski/"></a>
+            <a class="web" href="https://galychyna.com.ua/"></a>
+            <a class="facebook" href="https://www.facebook.com/Galychyna/"></a>
+            <a class="insta" href="https://www.instagram.com/galychyna/"></a>
+            <a class="youtube" href="https://www.youtube.com/watch?v=Ei3axtPslNU&ab_channel=%D0%A1%D0%98%D0%A0%D0%9D%D0%90%D0%97%D0%90%D0%92%D0%96%D0%94%D0%98"></a>
         </div>
     </div>
 
@@ -121,16 +153,24 @@
 
 <script>
 import moment from 'moment'
+import momentDurationFormatSetup from 'moment-duration-format'
+
+momentDurationFormatSetup(moment)
 
 export default {
   name: 'MolokoView',
 
   data () {
     return {
-      expireDays: 2 * 24 * 60 * 60 * 1000,
-      dateCreated: moment('2022.12.01 12:00'),
-      dateExpired: moment('2023.01.02 09:00'),
-      isExpired: false
+      dateCreated: moment('2023.01.10 22:35'),
+      dateExpired: moment('2023.01.18 23:05'),
+      isExpired: false,
+      isOpen: false,
+
+      duration: 0,
+      toExpireId: null,
+      fromExpireId: null,
+      time: 0
     }
   },
 
@@ -143,18 +183,47 @@ export default {
   methods: {
     formatNumber (number) {
       return number < 10 ? `0${number}` : number
+    },
+
+    countRevert () {
+      this.time = this.time + 1
+      this.duration = moment.duration(this.time, 'seconds')
+
+      const end = this.dateExpired.diff(this.dateCreated, 'seconds')
+      if (this.time >= end) {
+        clearInterval(this.fromExpireId)
+      }
+    },
+
+    startRevertCount () {
+      this.countRevert()
+
+      this.fromExpireId = setInterval(() => {
+        this.countRevert()
+      }, 1000)
+    },
+
+    startTimer () {
+      const diff = this.dateExpired.diff(moment(), 'seconds')
+
+      if (diff < 0) {
+        if (this.toExpireId) clearInterval(this.toExpireId)
+        this.isExpired = true
+        console.log('diff', diff)
+        this.time = Math.abs(diff === -1 ? 0 : diff)
+        if (!this.fromExpireId) this.startRevertCount()
+      } else {
+        this.duration = moment.duration(diff, 'seconds')
+      }
     }
   },
 
   mounted () {
-    const diff = this.dateExpired.diff(moment(), 'seconds')
+    this.startTimer()
 
-    let expiteTime = diff * 1000
-    if (expiteTime < 0) {
-      expiteTime = Math.abs(expiteTime)
-      this.isExpired = true
-    }
-    this.expireDays = expiteTime
+    this.toExpireId = setInterval(() => {
+      this.startTimer()
+    }, 1000)
   }
 }
 </script>

@@ -15,7 +15,7 @@ img {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 10px;
 }
 
 .header {
@@ -69,7 +69,8 @@ img {
 .product-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  max-height: 260px;
 }
 
 .h1, .h2 {
@@ -107,8 +108,11 @@ h1, span, p, h2 {
     font-weight: 700;
     font-size: 16px;
     margin-bottom: 0;
-    padding-right: 10px;
     text-align: left;
+}
+
+.timer .instruments {
+    text-align: center;
 }
 
 .info {
@@ -118,7 +122,6 @@ h1, span, p, h2 {
 }
 
 .count-down {
-    margin-top: 36px;
     text-align: center;
 }
 
@@ -161,7 +164,7 @@ h1, span, p, h2 {
 
 .color-olive {
     color: rgb(19 36 74 / 39%);
-    font-size: 15px;
+    font-size: 13px;
 }
 
 .timer-wrap {
@@ -170,7 +173,7 @@ h1, span, p, h2 {
 }
 
 .timer.expired {
-    background: #f0dbdb;
+    background: #e9aeae;
 }
 
 .timer.expired .timer-wrap .numbers-size {
@@ -246,6 +249,38 @@ h1, span, p, h2 {
     margin-left: 5px;
 }
 
+.product-info .details {
+    display: block;
+    height: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.mb-3 {
+    margin-bottom: 12px;
+}
+
+.details.open {
+    height: 200px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+.detail-title {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+/* .detail-item > div {
+
+}
+
+.detail-item > span {
+
+} */
 
 @media screen and (min-width: 480px) {
    

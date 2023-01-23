@@ -11,6 +11,7 @@
     "@chenfengyuan/vue-countdown": "^2.1.0",
     "core-js": "^3.8.3",
     "moment": "^2.29.4",
+    "moment-duration-format": "^2.3.2",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
