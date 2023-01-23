@@ -121,6 +121,10 @@ h1, span, p, h2 {
     text-align: right;
 }
 
+.nav-link {
+    margin: 10px;
+}
+
 .count-down {
     text-align: center;
 }
