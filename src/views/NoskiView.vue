@@ -62,15 +62,15 @@
 
         <div class="product-img">
             <img src="@/assets/images/photo1671616747.jpeg" alt="">
-            <span v-if="isExpired" class="expired-label">ПРОСРОЧЕНО</span>
+            <span v-if="isExpired" class="expired-label">ПРОСТРОЧЕНО</span>
         </div>
 
         <h1 class="h1">Носки Чоловічі Житомирські</h1>
 
         <div class="product-info">
             <div>
-                <span class="instruments">Виробник:</span>
-                <span class="info">Житомир</span>
+                <span class="instruments">Номер партії:</span>
+                <span class="info">20855</span>
             </div>
 
             <div class="mr">
@@ -93,12 +93,19 @@
                 <span class="info"> Температура, вологість </span>
             </div>
 
-            <span class="more"  @click="isOpen = !isOpen">
-              <span>Подробнее</span>
-              <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow">
-            </span>
+            <div class="text-center">
+              <span class="more" @click="onOpenDetails">
+                <span>Докладніше</span>
+                <img src="@/assets/images/arrow-down.png" alt="" class="more-arrow" :class="{'open': isOpen}">
+              </span>
+            </div>
 
-            <div :class="{'open': isOpen}" class="details" ref="details">
+            <div
+              :class="{'open': isOpen}"
+              :style="{height: isOpen ? `${detailsHeight}px` : '0px' }"
+              class="details"
+              ref="details"
+            >
               <h3 class="detail-title">Cклад:</h3>
               <div class="detail-item">
                 <div>Бавовна</div>
@@ -167,6 +174,7 @@ export default {
       dateExpired: moment('2023.01.25 15:00'),
       isExpired: false,
       isOpen: false,
+      detailsHeight: 0,
 
       duration: 0,
       toExpireId: null,
@@ -184,6 +192,14 @@ export default {
   methods: {
     formatNumber (number) {
       return number < 10 ? `0${number}` : number
+    },
+
+    onOpenDetails () {
+      this.isOpen = !this.isOpen
+
+      if (this.isOpen) {
+        this.detailsHeight = this.$refs.details.scrollHeight
+      }
     },
 
     countRevert () {
@@ -210,7 +226,6 @@ export default {
       if (diff < 0) {
         if (this.toExpireId) clearInterval(this.toExpireId)
         this.isExpired = true
-        console.log('diff', diff)
         this.time = Math.abs(diff === -1 ? 0 : diff)
         if (!this.fromExpireId) this.startRevertCount()
       } else {
